@@ -1,4 +1,4 @@
-import type { AccountAuthenticator } from "@aptos-labs/ts-sdk"
+import type { TxnBuilderTypes } from "supra-l1-sdk"
 
 export type ToolsNameList =
 	| "aptos_balance"
@@ -47,6 +47,6 @@ export type ToolsNameList =
 	| "merkle_trade_get_position"
 
 export type SignedTransactionResponse = {
-	senderAuthenticator?: AccountAuthenticator
+	senderAuthenticator?: TxnBuilderTypes.AccountAuthenticatorEd25519
 	signature?: Uint8Array<ArrayBufferLike>
 }

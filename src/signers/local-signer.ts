@@ -1,54 +1,38 @@
 // src/signers/local-signer.ts
 
-import {
-	type Account,
-	type AccountAddress,
-	type AnyRawTransaction,
-	Aptos,
-	AptosConfig,
-	Network,
-} from "@aptos-labs/ts-sdk"
+import { type HexString, type SupraAccount, SupraClient } from "supra-l1-sdk"
+import type { TxnBuilderTypes } from "supra-l1-sdk-core"
+import type { SignedTransactionResponse } from "../types"
 import { BaseSigner } from "./base-signer"
 
 export class LocalSigner extends BaseSigner {
-	constructor(account: Account, network: Network = Network.DEVNET) {
-		const config = new AptosConfig({ network })
-		const aptos = new Aptos(config)
-		super(account, aptos)
+	constructor(account: SupraAccount) {
+		const supra = new SupraClient("https://rpc-autonet.supra.com/", 6)
+		super(account, supra)
 	}
 
-	public getAddress(): AccountAddress {
-		return this.account.accountAddress
+	public getAddress(): HexString {
+		return this.account.address()
 	}
 
-	async signTransaction(transaction: AnyRawTransaction) {
-		const senderAuthenticator = this.aptos.transaction.sign({
-			signer: this.account,
-			transaction,
-		})
+	async signTransaction(transaction: TxnBuilderTypes.RawTransaction): Promise<SignedTransactionResponse> {
+		const senderAuthenticator = SupraClient.createSignedTransaction(this.account, transaction)
 
 		return {
-			senderAuthenticator,
+			senderAuthenticator: senderAuthenticator as unknown as TxnBuilderTypes.AccountAuthenticatorEd25519,
 		}
 	}
 
-	async sendTransaction(transaction: AnyRawTransaction) {
-		const signedTx = await this.signTransaction(transaction)
-
-		const submittedTx = await this.aptos.transaction.submit.simple({
-			transaction,
-			senderAuthenticator: signedTx.senderAuthenticator,
+	async sendTransaction(transaction: Uint8Array): Promise<HexString> {
+		const submittedTx = await this.supra.sendTxUsingSerializedRawTransaction(this.account, transaction, {
+			enableWaitForTransaction: true,
 		})
 
-		const result = await this.aptos.waitForTransaction({
-			transactionHash: submittedTx.hash,
-		})
-
-		return result.hash
+		return submittedTx.txHash as unknown as HexString
 	}
 
 	async signMessage(message: any): Promise<string> {
-		const signedMessage = this.account.signWithAuthenticator(message)
+		const signedMessage = this.account.signHexString(message)
 
 		return signedMessage.toString()
 	}
