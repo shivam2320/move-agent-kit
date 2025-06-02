@@ -1,4 +1,5 @@
-import type { AgentRuntime } from "../../agent"
+import type { AgentRuntime } from "../../agent";
+import { BCS } from "supra-l1-sdk";
 
 /**
  * Create a fungible asset token
@@ -9,41 +10,55 @@ import type { AgentRuntime } from "../../agent"
  * @param projectURI URI of the token project
  */
 export async function createToken(
-	agent: AgentRuntime,
-	name: string,
-	symbol: string,
-	iconURI: string,
-	projectURI: string
+  agent: AgentRuntime,
+  name: string,
+  symbol: string,
+  iconURI: string,
+  projectURI: string
 ): Promise<{
-	hash: string
-	token: any
+  hash: string;
+  token: any;
 }> {
-	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: {
-				function: "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd::launchpad::create_fa_simple",
-				functionArguments: [name, symbol, iconURI, projectURI],
-			},
-		})
+  try {
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd",
+      "launchpad",
+      "create_fa_simple",
+      [],
+      [
+        BCS.bcsSerializeStr(name),
+        BCS.bcsSerializeStr(symbol),
+        BCS.bcsSerializeStr(iconURI),
+        BCS.bcsSerializeStr(projectURI),
+      ]
+    );
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token creation failed")
-			throw new Error("Token creation failed")
-		}
+    if (!txn.result) {
+      console.error(txn, "Token burn failed");
+      throw new Error("Token burn failed");
+    }
 
-		return {
-			hash: signedTransaction.hash,
-			// @ts-ignore
-			token: signedTransaction.events[0].data.fa_obj.inner,
-		}
-	} catch (error: any) {
-		throw new Error(`Token creation failed: ${error.message}`)
-	}
+    return {
+      hash: txn.txHash,
+      // @ts-ignore
+      token: txn.events[0].data.fa_obj.inner,
+    };
+  } catch (error: any) {
+    throw new Error(`Token creation failed: ${error.message}`);
+  }
 }

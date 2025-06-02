@@ -1,4 +1,5 @@
-import type { AgentRuntime } from "../../agent"
+import { BCS, SupraClient } from "supra-l1-sdk";
+import type { AgentRuntime } from "../../agent";
 
 /**
  * Burn fungible asset token
@@ -7,29 +8,42 @@ import type { AgentRuntime } from "../../agent"
  * @param mint Fungible asset address to burn
  * @returns Transaction signature
  */
-export async function burnToken(agent: AgentRuntime, amount: number, mint: string): Promise<string> {
-	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: {
-				function: "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd::launchpad::burn_fa",
-				functionArguments: [mint, amount],
-			},
-		})
+export async function burnToken(
+  agent: AgentRuntime,
+  amount: number,
+  mint: string
+): Promise<string> {
+  try {
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd",
+      "launchpad",
+      "burn_fa",
+      [],
+      [BCS.bcsSerializeStr(mint), BCS.bcsSerializeUint64(amount)]
+    );
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token burn failed")
-			throw new Error("Token burn failed")
-		}
+    if (!txn.result) {
+      console.error(txn, "Token burn failed");
+      throw new Error("Token burn failed");
+    }
 
-		return signedTransaction.hash
-	} catch (error: any) {
-		throw new Error(`Token burn failed: ${error.message}`)
-	}
+    return txn.txHash;
+  } catch (error: any) {
+    throw new Error(`Token burn failed: ${error.message}`);
+  }
 }

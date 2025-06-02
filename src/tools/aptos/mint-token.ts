@@ -1,42 +1,54 @@
-import { Account, type AccountAddress } from "@aptos-labs/ts-sdk"
-import type { AgentRuntime } from "../../agent"
+import { BCS, HexString, SupraClient } from "supra-l1-sdk";
+import type { AgentRuntime } from "../../agent";
 
 /**
- * Mint a fungible asset token
+ * Burn fungible asset token
  * @param agent MoveAgentKit instance
- * @param name Name of the token
- * @param symbol Symbol of the token
- * @param iconURI URI of the token icon
- * @param projectURI URI of the token project
+ * @param amount Amount to burn
+ * @param mint Fungible asset address to burn
+ * @returns Transaction signature
  */
 export async function mintToken(
-	agent: AgentRuntime,
-	to: AccountAddress,
-	mint: string,
-	amount: number
+  agent: AgentRuntime,
+  to: HexString,
+  mint: string,
+  amount: number
 ): Promise<string> {
-	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: {
-				function: "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd::launchpad::mint_to_address",
-				functionArguments: [to.toString(), mint, amount],
-			},
-		})
+  try {
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd",
+      "launchpad",
+      "mint_to_address",
+      [],
+      [
+        BCS.bcsSerializeStr(to.toString()),
+        BCS.bcsSerializeStr(mint),
+        BCS.bcsSerializeUint64(amount),
+      ]
+    );
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token mint failed")
-			throw new Error("Token mint failed")
-		}
+    if (!txn.result) {
+      console.error(txn, "Token burn failed");
+      throw new Error("Token burn failed");
+    }
 
-		return signedTransaction.hash
-	} catch (error: any) {
-		throw new Error(`Token mint failed: ${error.message}`)
-	}
+    return txn.txHash;
+  } catch (error: any) {
+    throw new Error(`Token burn failed: ${error.message}`);
+  }
 }

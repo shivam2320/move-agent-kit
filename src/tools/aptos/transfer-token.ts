@@ -1,9 +1,5 @@
-import {
-	type AccountAddress,
-	type InputGenerateTransactionPayloadData,
-	convertAmountFromHumanReadableToOnChain,
-} from "@aptos-labs/ts-sdk"
-import type { AgentRuntime } from "../../agent"
+import { BCS, HexString, TxnBuilderTypes } from "supra-l1-sdk-core";
+import type { AgentRuntime } from "../../agent";
 
 /**
  * Transfer APT, tokens or fungible asset to a recipient
@@ -20,42 +16,49 @@ import type { AgentRuntime } from "../../agent"
  * ```
  */
 export async function transferTokens(
-	agent: AgentRuntime,
-	to: AccountAddress,
-	amount: number,
-	mint: string
+  agent: AgentRuntime,
+  to: HexString,
+  amount: number,
+  mint: string
 ): Promise<string> {
-	const COIN_STANDARD_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x1::coin::transfer",
-		typeArguments: [mint],
-		functionArguments: [to.toString(), amount],
-	}
+  try {
+    const isCoin = mint.split("::").length === 3;
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x0000000000000000000000000000000000000000000000000000000000000001",
+      isCoin ? "coin" : "primary_fungible_store",
+      "transfer",
+      isCoin ? [mint as unknown as TxnBuilderTypes.TypeTag] : [],
+      isCoin
+        ? [BCS.bcsSerializeStr(to.toString()), BCS.bcsSerializeUint64(amount)]
+        : [
+            BCS.bcsSerializeStr(mint),
+            BCS.bcsSerializeStr(to.toString()),
+            BCS.bcsSerializeUint64(amount),
+          ]
+    );
 
-	const FUNGIBLE_ASSET_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x1::primary_fungible_store::transfer",
-		typeArguments: ["0x1::fungible_asset::Metadata"],
-		functionArguments: [mint, to.toString(), amount],
-	}
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: mint.split("::").length === 3 ? COIN_STANDARD_DATA : FUNGIBLE_ASSET_DATA,
-		})
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
+    if (!txn.result) {
+      console.error(txn, "Token transfer failed");
+      throw new Error("Token transfer failed");
+    }
 
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
-
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token transfer failed")
-			throw new Error("Token transfer failed")
-		}
-
-		return signedTransaction.hash
-	} catch (error: any) {
-		throw new Error(`Token transfer failed: ${error.message}`)
-	}
+    return txn.txHash;
+  } catch (error: any) {
+    throw new Error(`Token transfer failed: ${error.message}`);
+  }
 }
