@@ -1,5 +1,10 @@
-import { AccountAddress, type InputGenerateTransactionPayloadData, type MoveStructId } from "@aptos-labs/ts-sdk"
-import type { AgentRuntime } from "../../agent"
+import {
+  AccountAddress,
+  type InputGenerateTransactionPayloadData,
+  type MoveStructId,
+} from "@aptos-labs/ts-sdk";
+import type { AgentRuntime } from "../../agent";
+import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
  * Repay APT, tokens or fungible asset from a position
@@ -16,50 +21,55 @@ import type { AgentRuntime } from "../../agent"
  * const fungibleAssetTransactionHash = await repayToken(agent, amount, APTOS_COIN, positionId, fungibleAssetAddress); // For fungible asset
  */
 export async function repayToken(
-	agent: AgentRuntime,
-	amount: number,
-	mint: MoveStructId,
-	positionId: string,
-	fungibleAsset: boolean
+  agent: AgentRuntime,
+  amount: number,
+  mint: string,
+  positionId: string,
+  fungibleAsset: boolean
 ): Promise<{
-	hash: string
-	positionId: string
+  hash: string;
+  positionId: string;
 }> {
-	const DEFAULT_FUNCTIONAL_ARGS = [positionId, amount]
+  try {
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
+      "pool",
+      fungibleAsset ? "repay_fa" : "repay",
+      [mint as unknown as TxnBuilderTypes.TypeTag],
+      fungibleAsset
+        ? [
+            BCS.bcsSerializeStr(positionId),
+            BCS.bcsSerializeStr(mint),
+            BCS.bcsSerializeUint64(amount),
+          ]
+        : [BCS.bcsSerializeStr(positionId), BCS.bcsSerializeUint64(amount)]
+    );
 
-	const COIN_STANDARD_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::pool::repay",
-		typeArguments: [mint.toString()],
-		functionArguments: DEFAULT_FUNCTIONAL_ARGS,
-	}
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-	const FUNGIBLE_ASSET_DATA: InputGenerateTransactionPayloadData = {
-		function: "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::pool::repay_fa",
-		functionArguments: [positionId, mint.toString(), amount],
-	}
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-	try {
-		const transaction = await agent.aptos.transaction.build.simple({
-			sender: agent.account.getAddress(),
-			data: fungibleAsset ? FUNGIBLE_ASSET_DATA : COIN_STANDARD_DATA,
-		})
+    if (!txn.result) {
+      console.error(txn, "Token repay failed");
+      throw new Error("Token repay failed");
+    }
 
-		const committedTransactionHash = await agent.account.sendTransaction(transaction)
-
-		const signedTransaction = await agent.aptos.waitForTransaction({
-			transactionHash: committedTransactionHash,
-		})
-
-		if (!signedTransaction.success) {
-			console.error(signedTransaction, "Token repay failed")
-			throw new Error("Token repay failed")
-		}
-
-		return {
-			hash: signedTransaction.hash,
-			positionId,
-		}
-	} catch (error: any) {
-		throw new Error(`Token repay failed: ${error.message}`)
-	}
+    return {
+      hash: txn.txHash,
+      positionId,
+    };
+  } catch (error: any) {
+    throw new Error(`Token repay failed: ${error.message}`);
+  }
 }

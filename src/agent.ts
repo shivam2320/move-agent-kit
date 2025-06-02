@@ -18,10 +18,8 @@ import {
   lendToken,
   mintToken,
   repayToken,
-  stakeTokens,
   transferNFT,
   transferTokens,
-  unstakeTokens,
   withdrawToken,
 } from "./tools";
 import { createImage } from "./tools/openai";
@@ -30,7 +28,7 @@ import {
   createPool,
   removeLiquidity,
   swap,
-} from "./tools/liquidswap";
+} from "./tools/dexlyn";
 import { getTokenByTokenName } from "./utils/get-pool-address-by-token-name";
 import { HexString, SupraClient } from "supra-l1-sdk";
 
@@ -92,14 +90,6 @@ export class AgentRuntime {
 
   mintToken(to: HexString, mint: string, amount: number) {
     return mintToken(this, to, mint, amount);
-  }
-
-  stakeTokensWithAmnis(to: AccountAddress, amount: number) {
-    return stakeTokens(this, to, amount);
-  }
-
-  withdrawStakeFromAmnis(to: AccountAddress, amount: number) {
-    return unstakeTokens(this, to, amount);
   }
 
   transferNFT(to: AccountAddress, mint: AccountAddress) {

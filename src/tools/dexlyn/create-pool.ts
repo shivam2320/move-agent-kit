@@ -3,15 +3,17 @@ import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Get user position in joule
+ * Create a new pool in liquidswap
  * @param agent MoveAgentKit instance
- * @param mint MoveStructId of the token
- * @returns User position data
+ * @param mintX MoveStructId of the first token
+ * @param mintY MoveStructId of the second token
+ * @returns Transaction signature
  */
-export async function getUserPosition(
+export async function createPool(
   agent: AgentRuntime,
-  mint: MoveStructId
-): Promise<any> {
+  mintX: MoveStructId,
+  mintY: MoveStructId
+): Promise<string> {
   try {
     let transaction = await agent.supra.createRawTxObject(
       agent.account.getAddress(),
@@ -19,9 +21,13 @@ export async function getUserPosition(
         await agent.supra.getAccountInfo(agent.account.getAddress())
       ).sequence_number,
       "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
-      "pool",
-      "get_user_position",
-      [mint as unknown as TxnBuilderTypes.TypeTag],
+      "router",
+      "register_pool",
+      [
+        mintX as unknown as TxnBuilderTypes.TypeTag,
+        mintY as unknown as TxnBuilderTypes.TypeTag,
+        "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8::curves::Uncorrelated" as unknown as TxnBuilderTypes.TypeTag,
+      ],
       []
     );
 
@@ -37,12 +43,12 @@ export async function getUserPosition(
     );
 
     if (!txn.result) {
-      console.error(txn, "Get user position failed");
-      throw new Error("Get user position failed");
+      console.error(txn, "Create pool failed");
+      throw new Error("Create pool failed");
     }
 
-    return txn.result;
+    return txn.txHash;
   } catch (error: any) {
-    throw new Error(`Get user position failed: ${error.message}`);
+    throw new Error(`Create pool failed: ${error.message}`);
   }
 }

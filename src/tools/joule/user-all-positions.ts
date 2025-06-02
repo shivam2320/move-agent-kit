@@ -1,32 +1,44 @@
-import type { AccountAddress } from "@aptos-labs/ts-sdk"
-import type { AgentRuntime } from "../../agent"
-import { removeLastInterestRateIndex } from "../../utils/clean-joule-all-positions-list"
+import type { MoveStructId } from "@aptos-labs/ts-sdk";
+import type { AgentRuntime } from "../../agent";
+import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Get details about a user's all positions
+ * Get all user positions in joule
  * @param agent MoveAgentKit instance
- * @param userAddress The address of the user
- * @returns List of user positions
+ * @returns All user positions data
  */
-export async function getUserAllPositions(agent: AgentRuntime, userAddress: AccountAddress | string): Promise<any> {
-	try {
-		const transaction = await agent.aptos.view({
-			payload: {
-				function: "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6::pool::user_positions_map",
-				functionArguments: [userAddress.toString()],
-			},
-		})
+export async function getAllUserPositions(agent: AgentRuntime): Promise<any> {
+  try {
+    let transaction = await agent.supra.createRawTxObject(
+      agent.account.getAddress(),
+      (
+        await agent.supra.getAccountInfo(agent.account.getAddress())
+      ).sequence_number,
+      "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
+      "pool",
+      "get_all_user_positions",
+      [],
+      []
+    );
 
-		if (!transaction) {
-			throw new Error("Failed to fetch user all positions")
-		}
+    let rawTransactionSerializer = new BCS.Serializer();
+    transaction.serialize(rawTransactionSerializer);
 
-		// TODO : make the amounts human readable // sync with shivam for all view function
+    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
+      (agent.account as any).account,
+      rawTransactionSerializer.getBytes(),
+      {
+        enableWaitForTransaction: true,
+      }
+    );
 
-		const cleanedTransaction = removeLastInterestRateIndex(transaction)
+    if (!txn.result) {
+      console.error(txn, "Get all user positions failed");
+      throw new Error("Get all user positions failed");
+    }
 
-		return cleanedTransaction
-	} catch (error: any) {
-		throw new Error(`Failed to get user all positions: ${error.message}`)
-	}
+    return txn.result;
+  } catch (error: any) {
+    throw new Error(`Get all user positions failed: ${error.message}`);
+  }
 }
