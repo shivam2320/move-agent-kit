@@ -1,6 +1,6 @@
 import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
-import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
+import { BCS, HexString, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
  * Get user position in joule
@@ -10,7 +10,8 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  */
 export async function getUserPosition(
   agent: AgentRuntime,
-  mint: MoveStructId
+  userAddress: HexString,
+  positionId: string
 ): Promise<any> {
   try {
     let transaction = await agent.supra.createRawTxObject(
@@ -21,8 +22,11 @@ export async function getUserPosition(
       "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
       "pool",
       "get_user_position",
-      [mint as unknown as TxnBuilderTypes.TypeTag],
-      []
+      [],
+      [
+        BCS.bcsSerializeStr(userAddress.toString()),
+        BCS.bcsSerializeStr(positionId),
+      ]
     );
 
     let rawTransactionSerializer = new BCS.Serializer();

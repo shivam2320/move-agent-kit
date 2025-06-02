@@ -10,7 +10,7 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  */
 export async function getPoolDetail(
   agent: AgentRuntime,
-  mint: MoveStructId
+  mint: string
 ): Promise<any> {
   try {
     let transaction = await agent.supra.createRawTxObject(

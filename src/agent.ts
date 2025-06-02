@@ -9,11 +9,11 @@ import {
   claimReward,
   createToken,
   getBalance,
-  getPoolDetails,
+  getPoolDetail,
   getTokenDetails,
   getTokenPrice,
   getTransaction,
-  getUserAllPositions,
+  getAllUserPositions,
   getUserPosition,
   lendToken,
   mintToken,
@@ -144,15 +144,15 @@ export class AgentRuntime {
     return repayToken(this, amount, mint, positionId, fungibleAsset);
   }
 
-  getUserPosition(userAddress: AccountAddress, positionId: string) {
+  getUserPosition(userAddress: HexString, positionId: string) {
     return getUserPosition(this, userAddress, positionId);
   }
 
-  getUserAllPositions(userAddress: AccountAddress) {
-    return getUserAllPositions(this, userAddress);
+  getUserAllPositions(userAddress: HexString) {
+    return getAllUserPositions(this, userAddress);
   }
   getPoolDetails(mint: string) {
-    return getPoolDetails(this, mint);
+    return getPoolDetail(this, mint);
   }
 
   addLiquidity(

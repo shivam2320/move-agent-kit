@@ -1,13 +1,21 @@
 import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
-import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
+import {
+  BCS,
+  HexString,
+  type SupraAccount,
+  TxnBuilderTypes,
+} from "supra-l1-sdk-core";
 
 /**
  * Get all user positions in joule
  * @param agent MoveAgentKit instance
  * @returns All user positions data
  */
-export async function getAllUserPositions(agent: AgentRuntime): Promise<any> {
+export async function getAllUserPositions(
+  agent: AgentRuntime,
+  userAddress: HexString
+): Promise<any> {
   try {
     let transaction = await agent.supra.createRawTxObject(
       agent.account.getAddress(),
@@ -18,7 +26,7 @@ export async function getAllUserPositions(agent: AgentRuntime): Promise<any> {
       "pool",
       "get_all_user_positions",
       [],
-      []
+      [BCS.bcsSerializeStr(userAddress.toString())]
     );
 
     let rawTransactionSerializer = new BCS.Serializer();
