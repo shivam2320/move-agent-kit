@@ -1,43 +1,43 @@
-import { createReactAgent } from "@langchain/langgraph/prebuilt"
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import {
-	AptosAccountAddressTool,
-	AptosBalanceTool,
-	AptosGetTokenDetailTool,
-	AptosGetTokenPriceTool,
-	AptosTransactionTool,
-	JouleGetPoolDetails,
-} from "move-agent-kit"
-import { setupAgentKit } from "../agent"
-import { StateAnnotation } from "../state"
+  SupraAccountAddressTool,
+  SupraBalanceTool,
+  SupraGetTokenDetailTool,
+  SupraGetTokenPriceTool,
+  SupraTransactionTool,
+  JouleGetPoolDetails,
+} from "move-agent-kit";
+import { setupAgentKit } from "../agent";
+import { StateAnnotation } from "../state";
 
 export const createAptosReadAgent = async () => {
-	const { agentRuntime, llm } = await setupAgentKit()
+  const { agentRuntime, llm } = await setupAgentKit();
 
-	const readAgentTools = [
-		new AptosBalanceTool(agentRuntime),
-		new AptosGetTokenDetailTool(agentRuntime),
-		new AptosAccountAddressTool(agentRuntime),
-		new AptosTransactionTool(agentRuntime),
-		new AptosGetTokenPriceTool(agentRuntime),
-		new JouleGetPoolDetails(agentRuntime),
-	]
+  const readAgentTools = [
+    new SupraBalanceTool(agentRuntime),
+    new SupraGetTokenDetailTool(agentRuntime),
+    new SupraAccountAddressTool(agentRuntime),
+    new SupraTransactionTool(agentRuntime),
+    new SupraGetTokenPriceTool(agentRuntime),
+    new JouleGetPoolDetails(agentRuntime),
+  ];
 
-	const readAgent = createReactAgent({
-		tools: readAgentTools,
-		llm: llm,
-	})
+  const readAgent = createReactAgent({
+    tools: readAgentTools,
+    llm: llm,
+  });
 
-	return readAgent
-}
+  return readAgent;
+};
 
-export const aptosReadNode = async (state: typeof StateAnnotation.State) => {
-	const { messages } = state
+export const supraReadNode = async (state: typeof StateAnnotation.State) => {
+  const { messages } = state;
 
-	const readAgent = await createAptosReadAgent()
+  const readAgent = await createAptosReadAgent();
 
-	const result = await readAgent.invoke({ messages })
+  const result = await readAgent.invoke({ messages });
 
-	return {
-		messages: [...result.messages],
-	}
-}
+  return {
+    messages: [...result.messages],
+  };
+};

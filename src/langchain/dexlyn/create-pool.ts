@@ -3,9 +3,9 @@ import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
 import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
 
-export class LiquidSwapCreatePoolTool extends Tool {
-  name = "liquidswap_create_pool";
-  description = `this tool can be used to create a new pool in liquidswap
+export class DexlynCreatePoolTool extends Tool {
+  name = "Dexlyn_create_pool";
+  description = `this tool can be used to create a new pool in Dexlyn
 
     if you want to create a pool with SUPRA and one of the token, mint will be "0x1::supra_coin::SupraCoin"
 

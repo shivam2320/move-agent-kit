@@ -1,37 +1,30 @@
-import {
-	Aptos,
-	AptosConfig,
-	Ed25519PrivateKey,
-	HexInput,
-	Network,
-	PrivateKey,
-	PrivateKeyVariants,
-} from "@aptos-labs/ts-sdk"
-import { ChatAnthropic } from "@langchain/anthropic"
-import { config } from "dotenv"
-import { AgentRuntime, LocalSigner } from "move-agent-kit"
-config()
+import { ChatAnthropic } from "@langchain/anthropic";
+import { config } from "dotenv";
+import { AgentRuntime, LocalSigner } from "move-agent-kit";
+import { SupraAccount, SupraClient } from "supra-l1-sdk";
+config();
 
 export const llm = new ChatAnthropic({
-	model: "claude-3-5-sonnet-latest",
-	anthropicApiKey: process.env.ANTHROPIC_API_KEY,
-})
+  model: "claude-3-5-sonnet-latest",
+  anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 export const setupAgentKit = async () => {
-	const aptosConfig = new AptosConfig({
-		network: Network.MAINNET,
-	})
-	const aptos = new Aptos(aptosConfig)
-	const account = await aptos.deriveAccountFromPrivateKey({
-		privateKey: new Ed25519PrivateKey(
-			PrivateKey.formatPrivateKey(process.env.APTOS_PRIVATE_KEY as HexInput, PrivateKeyVariants.Ed25519)
-		),
-	})
-	const signer = new LocalSigner(account, Network.MAINNET)
-	const agentRuntime = new AgentRuntime(signer, aptos)
+  const supra = new SupraClient("https://rpc-mainnet.supra.com/", 6);
 
-	return {
-		agentRuntime,
-		llm,
-	}
-}
+  const privateKeyStr = process.env.SUPRA_PRIVATE_KEY;
+  if (!privateKeyStr) {
+    throw new Error("Missing SUPRA_PRIVATE_KEY environment variable");
+  }
+
+  const account = new SupraAccount(
+    Uint8Array.from(Buffer.from(privateKeyStr, "hex"))
+  );
+  const signer = new LocalSigner(account, supra);
+  const agentRuntime = new AgentRuntime(signer, supra);
+
+  return {
+    agentRuntime,
+    llm,
+  };
+};

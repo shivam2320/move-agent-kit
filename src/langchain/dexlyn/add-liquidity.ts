@@ -4,9 +4,9 @@ import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
 import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
 
-export class LiquidSwapAddLiquidityTool extends Tool {
-  name = "liquidswap_add_liquidity";
-  description = `this tool can be used to add liquidity in liquidswap
+export class DexlynAddLiquidityTool extends Tool {
+  name = "Dexlyn_add_liquidity";
+  description = `this tool can be used to add liquidity in Dexlyn
 
     if you want to add SUPRA and one of the token, mint will be "0x1::supra_coin::SupraCoin"
 

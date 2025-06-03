@@ -3,7 +3,7 @@ import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Remove liquidity from liquidswap
+ * Remove liquidity from Dexlyn
  * @param agent MoveAgentKit instance
  * @param mintX MoveStructId of the first token
  * @param mintY MoveStructId of the second token

@@ -3,7 +3,7 @@ import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Swap tokens in liquidswap
+ * Swap tokens in Dexlyn
  * @param agent MoveAgentKit instance
  * @param mintX MoveStructId of the token to swap from
  * @param mintY MoveStructId of the token to swap to

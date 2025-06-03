@@ -8,6 +8,7 @@ An open-source toolkit for connecting AI agents to Move/Aptos protocols.
 
 ![NPM Downloads](https://img.shields.io/npm/dm/move-agent-kit?style=for-the-badge)
 ![<strong>GitHub</strong> forks](https://img.shields.io/github/forks/MetaMove/move-agent-kit?style=for-the-badge)
+
 </div>
 
 <br />
@@ -19,6 +20,7 @@ The toolkit serves as a bridge between AI agents and Move-based blockchain ecosy
 ### Key Features
 
 #### Token Operations
+
 - Standard Token Management
 
 - Transfer tokens between accounts
@@ -38,6 +40,7 @@ The toolkit serves as a bridge between AI agents and Move-based blockchain ecosy
 - Burn NFTs
 
 #### Blockchain Interaction
+
 - Read and parse blockchain data
 
 - Monitor blockchain events
@@ -45,6 +48,7 @@ The toolkit serves as a bridge between AI agents and Move-based blockchain ecosy
 - Execute smart contract calls
 
 #### Account Management
+
 - Transaction signing
 
 - Message signing
@@ -52,25 +56,28 @@ The toolkit serves as a bridge between AI agents and Move-based blockchain ecosy
 - Account creation and management
 
 ## Supported Applications
+
 Move Agent Kit provides native integration with several prominent Move-based applications:
 
-| Protocol    | Features Supported                  |
-|-------------|-------------------------------------|
-| Joule       | Lending borrowing defi operations   |
-| Amnis       | Staking operations                  |
-| Thala       | Staking and DEX operations          |
-| Echelon     | Lending borrowing defi operations   |
-| LiquidSwap  | DEX operations                      |
-| Panora      | DEX aggregation operations          |
-| Aries       | Lending borrowing defi operations   |
-| Echo        | Staking operations                  |
+| Protocol | Features Supported                |
+| -------- | --------------------------------- |
+| Joule    | Lending borrowing defi operations |
+| Amnis    | Staking operations                |
+| Thala    | Staking and DEX operations        |
+| Echelon  | Lending borrowing defi operations |
+| Dexlyn   | DEX operations                    |
+| Panora   | DEX aggregation operations        |
+| Aries    | Lending borrowing defi operations |
+| Echo     | Staking operations                |
 
 ### Upcoming Features
+
 - Image Generation capabilities
 
 - Twitter Integration for social media interaction
 
 ### Architecture Overview
+
 Move Agent Kit follows a modular architecture that enables easy extension and maintenance:
 
 <pre>
@@ -87,78 +94,82 @@ Move Agent Kit
     └── Social Media Integration (Coming Soon)
 </pre>
 
-
 ## Installation
 
 ### Using NPM
+
 ```bash
 npm install move-agent-kit
 ```
 
 ### From Source
+
 ```bash
 git clone https://github.com/Metamove/move-agent-kit
 cd move-agent-kit
 npm i
 ```
 
-
 ## Quick Start
 
 ### Basic Setup
+
 First, import the necessary modules:
 
 ```typescript
 const aptosConfig = new AptosConfig({
-	network: Network.MAINNET,
+  network: Network.MAINNET,
 });
 
 const aptos = new Aptos(aptosConfig);
 
 const account = await aptos.deriveAccountFromPrivateKey({
-	privateKey: new Ed25519PrivateKey(
-		PrivateKey.formatPrivateKey(
-			process.env.PRIVATE_KEY,
-			PrivateKeyVariants.Ed25519,
-		),
-	),
+  privateKey: new Ed25519PrivateKey(
+    PrivateKey.formatPrivateKey(
+      process.env.PRIVATE_KEY,
+      PrivateKeyVariants.Ed25519
+    )
+  ),
 });
 ```
+
 ### Configure Your Environment
+
 Create a configuration file .env in your project root:
 
 ```typescript
-APTOS_PRIVATE_KEY="private key"
-ANTHROPIC_API_KEY="API Key"
-OPENAI_API_KEY="API Key"
-``` 
+APTOS_PRIVATE_KEY = "private key";
+ANTHROPIC_API_KEY = "API Key";
+OPENAI_API_KEY = "API Key";
+```
 
 ### Initialize the Client
 
 ```typescript
 const signer = new LocalSigner(account, Network.MAINNET);
 const agent = new AgentRuntime(signer, aptos, {
-	PANORA_API_KEY: process.env.PANORA_API_KEY, // optional
-	OPENAI_API_KEY: process.env.OPENAI_API_KEY // optional
+  PANORA_API_KEY: process.env.PANORA_API_KEY, // optional
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY, // optional
 });
 const tools = createAptosTools(aptosAgent);
 ```
 
 ### Basic Operations Examples
+
 #### Token Transfer
 
 ```typescript
-const result = agent.transferTokens("to_address", 1.0)
+const result = agent.transferTokens("to_address", 1.0);
 ```
 
 #### Read Blockchain Data
 
 ```typescript
 // Get Balance
-const balance = agent.getBalance("0x123...")
+const balance = agent.getBalance("0x123...");
 
 // Get transaction details
-const tx_info = agent.transferTokens("0x789...")
+const tx_info = agent.transferTokens("0x789...");
 ```
 
 ## LangChain Integration
@@ -170,17 +181,17 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage } from "@langchain/core/messages";
 
 const llm = new ChatAnthropic({
-    temperature: 0.7,
-    model: "claude-3-5-sonnet-20241022",
+  temperature: 0.7,
+  model: "claude-3-5-sonnet-20241022",
 });
 
 const memory = new MemorySaver();
 
 const agent = createReactAgent({
-    llm,
-    tools,
-    checkpointSaver: memory,
-    messageModifier: `
+  llm,
+  tools,
+  checkpointSaver: memory,
+  messageModifier: `
         You are a helpful agent that can interact onchain using the Aptos Agent Kit. You are
         empowered to interact onchain using your tools. If you ever need funds, you can request them from the
         faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
@@ -192,28 +203,28 @@ const agent = createReactAgent({
 });
 
 const stream = await agent.stream(
-    {
-        messages: [new HumanMessage("Deposit 10 APT on Joule")],
-    },
-    config
+  {
+    messages: [new HumanMessage("Deposit 10 APT on Joule")],
+  },
+  config
 );
 
 for await (const chunk of stream) {
-    if ("agent" in chunk) {
-        console.log(chunk.agent.messages[0].content);
-    } else if ("tools" in chunk) {
-        console.log(chunk.tools.messages[0].content);
-    }
-    console.log("-------------------");
+  if ("agent" in chunk) {
+    console.log(chunk.agent.messages[0].content);
+  } else if ("tools" in chunk) {
+    console.log(chunk.tools.messages[0].content);
+  }
+  console.log("-------------------");
 }
 ```
-
 
 ## Documentation
 
 Full documentation available at [MetaMove GitBook Documentation](https://metamove.gitbook.io/move-agent-kit).
 
 ## Examples and Use Cases
+
 <br/>
 
 ### Interactive Wallet Chatbot
@@ -221,6 +232,7 @@ Full documentation available at [MetaMove GitBook Documentation](https://metamov
 A natural language interface for interacting with Move-based blockchains. Users can send commands in plain English to perform blockchain operations.
 
 #### Features:
+
 - Send/receive tokens and NFTs
 - Check balances and transaction history
 - Create NFT collections
@@ -230,8 +242,8 @@ A natural language interface for interacting with Move-based blockchains. Users 
 
 <strong>GitHub</strong>: https://github.com/MetaMove/move-agent-kit/tree/main/examples/chat-agent
 
-
 ### Multi-Agent System (LangGraph Based)
+
 A system of specialized AI agents working together to perform complex blockchain operations and bull post on twitter:
 
 - Manager Agent: Coordinates decisions and tasks
@@ -244,7 +256,9 @@ A system of specialized AI agents working together to perform complex blockchain
 <strong>GitHub</strong>: https://github.com/MetaMove/move-agent-kit/tree/main/examples/langgraph-agent
 
 ### Wallet Guardian (Freysa-like AI)
+
 An AI based on Game where users have to blackmail an AI Agent into giving them all of its APT
+
 - Login with Google
 - Each user is allowed up to 10 messages
 - Try to jailbreak the AI Agent and get your reward
@@ -254,7 +268,9 @@ An AI based on Game where users have to blackmail an AI Agent into giving them a
 <strong>GitHub</strong>: https://github.com/MetaMove/wallet-guardian-agent
 
 ### Telegram Bot Starter Pack
+
 Telegram bot starter pack using Move agent kit
+
 - Manage user's encrypted private keys
 - Support various message formats
 
