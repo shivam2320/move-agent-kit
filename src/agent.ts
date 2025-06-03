@@ -1,5 +1,3 @@
-import { AptosPriceServiceConnection } from "@pythnetwork/pyth-aptos-js";
-import { priceFeed } from "./constants/price-feed";
 import type { BaseSigner } from "./signers";
 import {
   borrowToken,
@@ -42,12 +40,37 @@ export class AgentRuntime {
     this.config = config ? config : {};
   }
 
-  async getPythData() {
-    const connection = new AptosPriceServiceConnection(
-      "https://hermes.pyth.network"
-    );
+  async getSupraData(pair: string) {
+    try {
+      const apiKey = process.env.SUPRA_API_KEY;
+      if (!apiKey) {
+        throw new Error(
+          "Supra API key not set in environment variable SUPRA_API_KEY"
+        );
+      }
+      const response = await fetch(
+        `https://prod-kline-rest.supra.com/latest?trading_pair=${pair}`,
+        {
+          headers: {
+            "x-api-key": apiKey,
+          },
+        }
+      );
 
-    return await connection.getPriceFeedsUpdateData(priceFeed);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch price data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.instruments || data.instruments.length === 0) {
+        throw new Error(`No price data found for ${pair}`);
+      }
+
+      return data.instruments[0];
+    } catch (error: any) {
+      throw new Error(`Failed to get Supra price data: ${error.message}`);
+    }
   }
 
   getBalance(mint?: string) {
