@@ -3,7 +3,7 @@ import { type AgentRuntime, parseJson } from "../..";
 
 export class SupraGetTokenDetailTool extends Tool {
   name = "supra_token_details";
-  description = `Get the detail of any aptos tokens
+  description = `Get the detail of any supra tokens
 
   details also include decimals which you can use to make onchain values readable to a human user
 

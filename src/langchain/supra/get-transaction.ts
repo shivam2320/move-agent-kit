@@ -3,7 +3,7 @@ import { type AgentRuntime, parseJson } from "../..";
 
 export class SupraTransactionTool extends Tool {
   name = "supra_get_transaction";
-  description = `Fetches a transaction from aptos blockchain
+  description = `Fetches a transaction from supra blockchain
 
   Inputs ( input is a JSON string ):
   transactionHash: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)`;
@@ -16,13 +16,13 @@ export class SupraTransactionTool extends Tool {
     try {
       const parsedInput = parseJson(input);
 
-      const aptosTransaction = await this.agent.getTransaction(
+      const supraTransaction = await this.agent.getTransaction(
         parsedInput.transactionHash
       );
 
       return JSON.stringify({
         status: "success",
-        aptosTransaction,
+        supraTransaction,
       });
     } catch (error: any) {
       return JSON.stringify({

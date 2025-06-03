@@ -1,8 +1,3 @@
-import {
-  AccountAddress,
-  type InputGenerateTransactionPayloadData,
-  type MoveStructId,
-} from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
@@ -34,7 +29,7 @@ export async function claimReward(
       [
         (isCoinTypeSTApt
           ? "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::amapt_token::AmnisApt"
-          : "0x1::aptos_coin::AptosCoin") as unknown as TxnBuilderTypes.TypeTag,
+          : "0x1::supra_coin::SupraCoin") as unknown as TxnBuilderTypes.TypeTag,
       ],
       [
         BCS.bcsSerializeStr(coinReward),

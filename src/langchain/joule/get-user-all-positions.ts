@@ -1,4 +1,3 @@
-import { AccountAddress } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { tokensList } from "../../utils/get-pool-address-by-token-name";

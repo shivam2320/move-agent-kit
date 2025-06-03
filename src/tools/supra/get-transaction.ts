@@ -1,9 +1,8 @@
-import type { TransactionResponse } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { TransactionDetail } from "supra-l1-sdk";
 
 /**
- * Fetches transaction from aptos
+ * Fetches transaction from supra
  * @param agent MoveAgentKit instance
  * @param hash Transaction Hash
  * @returns Transaction signature

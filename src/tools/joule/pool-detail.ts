@@ -1,4 +1,3 @@
-import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 

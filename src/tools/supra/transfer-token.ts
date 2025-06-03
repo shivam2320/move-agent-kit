@@ -10,7 +10,7 @@ import type { AgentRuntime } from "../../agent";
  * @returns Transaction signature
  * @example
  * ```ts
- * const transactionHash = await transferTokens(agent, recipientAddress, amount, APTOS_COIN); // For APT
+ * const transactionHash = await transferTokens(agent, recipientAddress, amount, SUPRA_COIN); // For APT
  * const otherTransactionHash = await transferTokens(agent, recipientAddress, amount, OTHER_TOKEN); // For another token
  * const fungibleAssetTransactionHash = await transferTokens(agent, recipientAddress, amount, fungibleAssetAddress); // For fungible asset
  * ```

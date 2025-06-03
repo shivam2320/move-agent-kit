@@ -70,7 +70,7 @@ export const managerRouter = (state: typeof StateAnnotation.State) => {
   const { isSupraReadQuery, isWriterQuery, isXPostQuery } = state;
 
   if (isSupraReadQuery) {
-    return "aptosRead";
+    return "supraRead";
   } else if (isWriterQuery) {
     return "tweetWriter";
   } else if (isXPostQuery) {

@@ -3,7 +3,7 @@ import { type AgentRuntime, parseJson } from "../..";
 
 export class SupraTransferNFTTool extends Tool {
   name = "supra_transfer_nft";
-  description = `this tool can be used to transfer any NFT on aptos to receipient
+  description = `this tool can be used to transfer any NFT on supra to receipient
 
   Inputs ( input is a JSON string ):
   to: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)

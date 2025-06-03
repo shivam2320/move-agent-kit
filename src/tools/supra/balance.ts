@@ -1,11 +1,8 @@
-import {
-  type MoveStructId,
-  convertAmountFromOnChainToHumanReadable,
-} from "@aptos-labs/ts-sdk";
+import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 
 /**
- * Fetches balance of an aptos account
+ * Fetches balance of an supra account
  * @param agent MoveAgentKit instance
  * @returns Transaction signature
  * @example
@@ -15,13 +12,13 @@ import type { AgentRuntime } from "../../agent";
  */
 export async function getBalance(
   agent: AgentRuntime,
-  mint?: string | MoveStructId
+  mint?: string
 ): Promise<number> {
   try {
     if (mint) {
       let balance: number;
       if (mint.split("::").length !== 3) {
-        //     const balances = await agent.aptos.getCurrentFungibleAssetBalances({
+        //     const balances = await agent.supra.getCurrentFungibleAssetBalances({
         //       options: {
         //         where: {
         //           owner_address: {
@@ -36,7 +33,7 @@ export async function getBalance(
         balance = Number(
           await agent.supra.getAccountCoinBalance(
             agent.account.getAddress(),
-            mint as MoveStructId
+            mint
           )
         );
       }

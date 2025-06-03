@@ -1,13 +1,8 @@
-import {
-  AccountAddress,
-  type InputGenerateTransactionPayloadData,
-  type MoveStructId,
-} from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Borrow APT, tokens or fungible asset from a position
+ * Borrow SUPRA, tokens or fungible asset from a position
  * @param agent MoveAgentKit instance
  * @param amount Amount to mint
  * @param mint The Move struct ID of the token to borrow
@@ -16,9 +11,9 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  * @returns Transaction signature and position ID
  * @example
  * ```ts
- * const transactionHash = await borrowToken(agent, amount, APTOS_COIN, positionId); // For APT
+ * const transactionHash = await borrowToken(agent, amount, SUPRA_COIN, positionId); // For SUPRA
  * const otherTransactionHash = await borrowToken(agent, amount, OTHER_TOKEN, positionId); // For another token
- * const fungibleAssetTransactionHash = await borrowToken(agent, amount, APTOS_COIN, positionId, fungibleAssetAddress); // For fungible asset
+ * const fungibleAssetTransactionHash = await borrowToken(agent, amount, SUPRA_COIN, positionId, fungibleAssetAddress); // For fungible asset
  */
 export async function borrowToken(
   agent: AgentRuntime,
@@ -37,7 +32,7 @@ export async function borrowToken(
         await agent.supra.getAccountInfo(agent.account.getAddress())
       ).sequence_number,
       "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
-      "router",
+      "pool",
       fungibleAsset ? "borrow_fa" : "borrow",
       [mint as unknown as TxnBuilderTypes.TypeTag],
       fungibleAsset

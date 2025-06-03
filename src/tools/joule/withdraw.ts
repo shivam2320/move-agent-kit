@@ -1,13 +1,8 @@
-import {
-  AccountAddress,
-  type InputGenerateTransactionPayloadData,
-  type MoveStructId,
-} from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Withdraw APT, tokens or fungible asset from a position
+ * Withdraw SUPRA, tokens or fungible asset from a position
  * @param agent MoveAgentKit instance
  * @param amount Amount to mint
  * @param mint The Move struct ID of the token to withdraw
@@ -16,9 +11,9 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  * @returns Transaction signature and position ID
  * @example
  * ```ts
- * const transactionHash = await withdrawToken(agent, amount, APTOS_COIN, positionId); // For APT
+ * const transactionHash = await withdrawToken(agent, amount, SUPRA_COIN, positionId); // For SUPRA
  * const otherTransactionHash = await withdrawToken(agent, amount, OTHER_TOKEN, positionId); // For another token
- * const fungibleAssetTransactionHash = await withdrawToken(agent, amount, APTOS_COIN, positionId, fungibleAssetAddress); // For fungible asset
+ * const fungibleAssetTransactionHash = await withdrawToken(agent, amount, SUPRA_COIN, positionId, fungibleAssetAddress); // For fungible asset
  */
 export async function withdrawToken(
   agent: AgentRuntime,

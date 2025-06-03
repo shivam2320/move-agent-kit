@@ -1,13 +1,8 @@
-import {
-  AccountAddress,
-  type InputGenerateTransactionPayloadData,
-  type MoveStructId,
-} from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Repay APT, tokens or fungible asset from a position
+ * Repay SUPRA, tokens or fungible asset from a position
  * @param agent MoveAgentKit instance
  * @param amount Amount to mint
  * @param mint The Move struct ID of the token to repay
@@ -16,9 +11,9 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  * @returns Transaction signature and position ID
  * @example
  * ```ts
- * const transactionHash = await repayToken(agent, amount, APTOS_COIN, positionId); // For APT
+ * const transactionHash = await repayToken(agent, amount, SUPRA_COIN, positionId); // For SUPRA
  * const otherTransactionHash = await repayToken(agent, amount, OTHER_TOKEN, positionId); // For another token
- * const fungibleAssetTransactionHash = await repayToken(agent, amount, APTOS_COIN, positionId, fungibleAssetAddress); // For fungible asset
+ * const fungibleAssetTransactionHash = await repayToken(agent, amount, SUPRA_COIN, positionId, fungibleAssetAddress); // For fungible asset
  */
 export async function repayToken(
   agent: AgentRuntime,

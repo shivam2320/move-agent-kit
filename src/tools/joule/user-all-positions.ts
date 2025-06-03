@@ -1,11 +1,5 @@
-import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
-import {
-  BCS,
-  HexString,
-  type SupraAccount,
-  TxnBuilderTypes,
-} from "supra-l1-sdk-core";
+import { BCS, HexString } from "supra-l1-sdk-core";
 
 /**
  * Get all user positions in joule

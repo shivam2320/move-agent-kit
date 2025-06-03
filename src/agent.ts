@@ -1,4 +1,3 @@
-import type { AccountAddress, Aptos, MoveStructId } from "@aptos-labs/ts-sdk";
 import { AptosPriceServiceConnection } from "@pythnetwork/pyth-aptos-js";
 import { priceFeed } from "./constants/price-feed";
 import type { BaseSigner } from "./signers";
@@ -51,7 +50,7 @@ export class AgentRuntime {
     return await connection.getPriceFeedsUpdateData(priceFeed);
   }
 
-  getBalance(mint?: string | MoveStructId) {
+  getBalance(mint?: string) {
     return getBalance(this, mint);
   }
 
@@ -92,17 +91,17 @@ export class AgentRuntime {
     return mintToken(this, to, mint, amount);
   }
 
-  transferNFT(to: AccountAddress, mint: AccountAddress) {
+  transferNFT(to: HexString, mint: HexString) {
     return transferNFT(this, to, mint);
   }
 
-  burnNFT(mint: AccountAddress) {
+  burnNFT(mint: HexString) {
     return burnNFT(this, mint);
   }
 
   lendToken(
     amount: number,
-    mint: MoveStructId,
+    mint: string,
     positionId: string,
     newPosition: boolean,
     fungibleAsset: boolean
@@ -119,7 +118,7 @@ export class AgentRuntime {
 
   borrowToken(
     amount: number,
-    mint: MoveStructId,
+    mint: string,
     positionId: string,
     fungibleAsset: boolean
   ) {
@@ -128,7 +127,7 @@ export class AgentRuntime {
 
   withdrawToken(
     amount: number,
-    mint: MoveStructId,
+    mint: string,
     positionId: string,
     fungibleAsset: boolean
   ) {
@@ -137,7 +136,7 @@ export class AgentRuntime {
 
   repayToken(
     amount: number,
-    mint: MoveStructId,
+    mint: string,
     positionId: string,
     fungibleAsset: boolean
   ) {
@@ -156,8 +155,8 @@ export class AgentRuntime {
   }
 
   addLiquidity(
-    mintX: MoveStructId,
-    mintY: MoveStructId,
+    mintX: string,
+    mintY: string,
     mintXAmount: number,
     mintYAmount: number
   ) {
@@ -165,8 +164,8 @@ export class AgentRuntime {
   }
 
   removeLiquidity(
-    mintX: MoveStructId,
-    mintY: MoveStructId,
+    mintX: string,
+    mintY: string,
     lpAmount: number,
     minMintX = 0,
     minMintY = 0
@@ -174,20 +173,15 @@ export class AgentRuntime {
     return removeLiquidity(this, mintX, mintY, lpAmount, minMintX, minMintY);
   }
 
-  swap(
-    mintX: MoveStructId,
-    mintY: MoveStructId,
-    swapAmount: number,
-    minCoinOut?: number
-  ) {
+  swap(mintX: string, mintY: string, swapAmount: number, minCoinOut?: number) {
     return swap(this, mintX, mintY, swapAmount, minCoinOut);
   }
 
-  createPool(mintX: MoveStructId, mintY: MoveStructId) {
+  createPool(mintX: string, mintY: string) {
     return createPool(this, mintX, mintY);
   }
 
-  claimReward(rewardCoinType: MoveStructId | string) {
+  claimReward(rewardCoinType: string) {
     return claimReward(this, rewardCoinType);
   }
 }

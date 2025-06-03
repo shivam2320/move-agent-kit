@@ -1,16 +1,13 @@
-import {
-  AccountAddress,
-  convertAmountFromHumanReadableToOnChain,
-} from "@aptos-labs/ts-sdk";
+import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 
 export class SupraTransferTokenTool extends Tool {
   name = "supra_transfer_token";
-  description = `this tool can be used to transfer APT, any token or fungible asset to a recipient
+  description = `this tool can be used to transfer SUPRA, any token or fungible asset to a recipient
 
-  if you want to transfer APT, mint will be "0x1::aptos_coin::AptosCoin"
-  if you want to transfer token other than APT, you need to provide the mint of that specific token
+  if you want to transfer SUPRA, mint will be "0x1::supra_coin::SupraCoin"
+  if you want to transfer token other than SUPRA, you need to provide the mint of that specific token
   if you want to transfer fungible asset, add fungible asset address as mint
 
   keep to blank if user themselves wants to receive the token and not send to anybody else

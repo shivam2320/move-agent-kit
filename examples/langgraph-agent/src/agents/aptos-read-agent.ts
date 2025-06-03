@@ -10,7 +10,7 @@ import {
 import { setupAgentKit } from "../agent";
 import { StateAnnotation } from "../state";
 
-export const createAptosReadAgent = async () => {
+export const createSupraReadAgent = async () => {
   const { agentRuntime, llm } = await setupAgentKit();
 
   const readAgentTools = [
@@ -33,7 +33,7 @@ export const createAptosReadAgent = async () => {
 export const supraReadNode = async (state: typeof StateAnnotation.State) => {
   const { messages } = state;
 
-  const readAgent = await createAptosReadAgent();
+  const readAgent = await createSupraReadAgent();
 
   const result = await readAgent.invoke({ messages });
 

@@ -1,4 +1,3 @@
-import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
@@ -13,8 +12,8 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  */
 export async function addLiquidity(
   agent: AgentRuntime,
-  mintX: MoveStructId,
-  mintY: MoveStructId,
+  mintX: string,
+  mintY: string,
   mintXAmount: number,
   mintYAmount: number
 ): Promise<string> {

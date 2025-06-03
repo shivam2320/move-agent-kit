@@ -1,4 +1,3 @@
-import type { MoveStructId } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
@@ -11,8 +10,8 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  */
 export async function createPool(
   agent: AgentRuntime,
-  mintX: MoveStructId,
-  mintY: MoveStructId
+  mintX: string,
+  mintY: string
 ): Promise<string> {
   try {
     let transaction = await agent.supra.createRawTxObject(

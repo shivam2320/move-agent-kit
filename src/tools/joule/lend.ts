@@ -1,13 +1,8 @@
-import {
-  AccountAddress,
-  type InputGenerateTransactionPayloadData,
-  type MoveStructId,
-} from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
 
 /**
- * Lend APT, tokens or fungible asset to a position
+ * Lend SUPRA, tokens or fungible asset to a position
  * @param agent MoveAgentKit instance
  * @param amount Amount to mint
  * @param mint The Move struct ID of the token to lend
@@ -17,14 +12,14 @@ import { BCS, TxnBuilderTypes } from "supra-l1-sdk-core";
  * @returns Transaction signature and position ID
  * @example
  * ```ts
- * const transactionHash = await lendToken(agent, amount, APTOS_COIN, positionId, false); // For APT
+ * const transactionHash = await lendToken(agent, amount, SUPRA_COIN, positionId, false); // For SUPRA
  * const otherTransactionHash = await lendToken(agent, amount, OTHER_TOKEN, positionId, false); // For another token
- * const fungibleAssetTransactionHash = await lendToken(agent, amount, APTOS_COIN, positionId, false, fungibleAssetAddress); // For fungible asset
+ * const fungibleAssetTransactionHash = await lendToken(agent, amount, SUPRA_COIN, positionId, false, fungibleAssetAddress); // For fungible asset
  */
 export async function lendToken(
   agent: AgentRuntime,
   amount: number,
-  mint: MoveStructId,
+  mint: string,
   positionId: string,
   newPosition: boolean,
   fungibleAsset: boolean

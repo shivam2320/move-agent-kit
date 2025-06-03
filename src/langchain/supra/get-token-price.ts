@@ -3,7 +3,7 @@ import { type AgentRuntime, parseJson } from "../..";
 
 export class SupraGetTokenPriceTool extends Tool {
   name = "supra_token_price";
-  description = `Get the live price of any aptos tokens in USD.
+  description = `Get the live price of any supra tokens in USD.
 	do not do any decimals conversion here, the price is already in USD
 
   details also include decimals which you can use to make onchain values readable to a human user
