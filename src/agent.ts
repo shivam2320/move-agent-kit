@@ -7,7 +7,6 @@ import {
   createToken,
   getBalance,
   getPoolDetail,
-  getTokenDetails,
   getTokenPrice,
   getTransaction,
   getAllUserPositions,
@@ -75,10 +74,6 @@ export class AgentRuntime {
 
   getBalance(mint?: string) {
     return getBalance(this, mint);
-  }
-
-  getTokenDetails(token: string) {
-    return getTokenDetails(token);
   }
 
   getTokenByTokenName(name: string) {

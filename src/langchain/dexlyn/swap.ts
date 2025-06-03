@@ -15,7 +15,7 @@ if user added mintX or mintY as asset name, and you don't have the address of th
 usdt,zusdt,zusdc,apt,sthapt,mod,thl,wusdc,zweth,wweth,cake,stapt,abtc,stone,truapt,sbtc
 or whatever name the user has provided, you can use the token name to get the address of the token 
 
-cant swap any fungible tokens. only coin standard swap allowed. if user trying to swap fungible token, ask it to swap via panora.
+cant swap any fungible tokens. only coin standard swap allowed. if user trying to swap fungible token, ask it to swap via some other tool.
 
 coin standard format : string::string::string
 

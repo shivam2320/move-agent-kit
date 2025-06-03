@@ -90,9 +90,7 @@ export async function POST(request: Request) {
     );
 
     const signer = new LocalSigner(account);
-    const supraAgent = new AgentRuntime(signer, supra, {
-      PANORA_API_KEY: process.env.PANORA_API_KEY,
-    });
+    const supraAgent = new AgentRuntime(signer, supra);
     const tools = createSupraTools(supraAgent);
     const memory = new MemorySaver();
 

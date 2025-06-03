@@ -54,9 +54,7 @@ export const main = async () => {
   );
 
   const signer = new LocalSigner(account);
-  const agentRuntime = new AgentRuntime(signer, supra, {
-    PANORA_API_KEY: process.env.PANORA_API_KEY,
-  });
+  const agentRuntime = new AgentRuntime(signer, supra);
   const tools = createSupraTools(agentRuntime);
 
   const llm = new ChatAnthropic({

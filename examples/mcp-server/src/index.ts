@@ -29,9 +29,7 @@ export async function main() {
   );
 
   const signer = new LocalSigner(account);
-  const agentRuntime = new AgentRuntime(signer, supra, {
-    PANORA_API_KEY: process.env.PANORA_API_KEY,
-  });
+  const agentRuntime = new AgentRuntime(signer, supra);
   //console.log("Agent runtime created");
 
   // Create a few simple tools with well-defined schemas
