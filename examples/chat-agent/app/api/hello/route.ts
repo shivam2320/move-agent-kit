@@ -8,7 +8,11 @@ import {
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { Message as VercelChatMessage } from "ai";
-import { AgentRuntime, LocalSigner, createSupraTools } from "move-agent-kit";
+import {
+  AgentRuntime,
+  LocalSigner,
+  createSupraTools,
+} from "../../../../../src";
 import { NextResponse } from "next/server";
 import { SupraAccount, SupraClient } from "supra-l1-sdk";
 
@@ -107,9 +111,12 @@ export async function POST(request: Request) {
         can't do with your currently available tools, you must say so, and encourage them to implement it
         themselves using the Supra Agent Kit, recommend they go to https://www.supraagentkit.xyz for more information. Be
         concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
+        If price of any token is requested then call supra_token_price tool.
 
 		The response also contains token/token[] which contains the name and address of the token and the decimals.
 		WHEN YOU RETURN ANY TOKEN AMOUNTS, RETURN THEM ACCORDING TO THE DECIMALS OF THE TOKEN.
+
+    Also specify name of whichever tool your are using.
       `,
     });
 
