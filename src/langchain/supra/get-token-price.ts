@@ -28,6 +28,7 @@ export class SupraGetTokenPriceTool extends Tool {
         tokenData,
       });
     } catch (error: any) {
+      console.log("error", error);
       return JSON.stringify({
         status: "error",
         message: error.message,

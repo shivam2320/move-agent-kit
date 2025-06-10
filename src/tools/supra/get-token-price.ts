@@ -6,6 +6,7 @@
 export async function getTokenPrice(query: string): Promise<any> {
   try {
     const tradingPair = `${query.toLowerCase()}_usdt`;
+    console.log("pair", tradingPair);
     const apiKey = process.env.SUPRA_API_KEY;
     if (!apiKey) {
       throw new Error(
@@ -27,12 +28,15 @@ export async function getTokenPrice(query: string): Promise<any> {
 
     const data = await response.json();
 
+    console.log("data", data);
+
     if (!data.instruments || data.instruments.length === 0) {
       throw new Error(`No price data found for ${tradingPair}`);
     }
 
     return data.instruments[0];
   } catch (error: any) {
+    console.log(error);
     throw new Error(`Token price fetch failed: ${error.message}`);
   }
 }

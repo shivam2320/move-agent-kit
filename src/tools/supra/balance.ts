@@ -50,6 +50,7 @@ export async function getBalance(
 
     return convertedBalance;
   } catch (error: any) {
-    throw new Error(`Token transfer failed: ${error.message}`);
+    console.log("balance", error);
+    throw new Error(`Token balance failed: ${error.message}`);
   }
 }

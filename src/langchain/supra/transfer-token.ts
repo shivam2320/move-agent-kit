@@ -26,26 +26,17 @@ export class SupraTransferTokenTool extends Tool {
     try {
       const parsedInput = parseJson(input);
 
-      const mintDetail = await this.agent.getTokenDetails(parsedInput.mint);
-
       const recipient = this.agent.account.getAddress();
 
       const transferTokenTransactionHash = await this.agent.transferTokens(
         recipient,
-        convertAmountFromHumanReadableToOnChain(
-          parsedInput.amount,
-          mintDetail.decimals || 6
-        ),
+        convertAmountFromHumanReadableToOnChain(parsedInput.amount, 8),
         parsedInput.mint
       );
 
       return JSON.stringify({
         status: "success",
         transferTokenTransactionHash,
-        token: {
-          name: mintDetail.name,
-          decimals: mintDetail.decimals,
-        },
       });
     } catch (error: any) {
       return JSON.stringify({
