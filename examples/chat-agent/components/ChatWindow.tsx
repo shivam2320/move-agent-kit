@@ -149,6 +149,7 @@ export function ChatWindow(props: {
 		}
 	}
 
+
 	return (
 		<div
 			className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden ${messages.length > 0 ? "border" : ""}`}
@@ -182,7 +183,7 @@ export function ChatWindow(props: {
 				<div className="flex">{intemediateStepsToggle}</div>
 				<div className="flex w-full mt-4">
 					<input
-						className="grow mr-8 p-4 rounded"
+						className="grow mr-8 p-4 rounded text-black"
 						value={input}
 						placeholder={placeholder ?? "What's it like to be a pirate?"}
 						onChange={handleInputChange}

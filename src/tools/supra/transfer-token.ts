@@ -30,7 +30,7 @@ export async function transferTokens(
     console.log("mint", mint);
     console.log("amount", amount);
 
-    let transaction = await agent.supra.createRawTxObject(
+    let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
@@ -38,7 +38,7 @@ export async function transferTokens(
       "0x0000000000000000000000000000000000000000000000000000000000000001",
       isCoin ? "coin" : "primary_fungible_store",
       "transfer",
-      isCoin ? [mint as any] : [],
+      isCoin ? [new TxnBuilderTypes.TypeTagParser(mint).parseTypeTag()] : [],
       isCoin
         ? [to.toUint8Array(), BCS.bcsSerializeUint64(amount)]
         : [
@@ -48,12 +48,14 @@ export async function transferTokens(
           ]
     );
 
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
+    console.log("transaction", transaction);
+
+    // let rawTransactionSerializer = new BCS.Serializer();
+    // transaction.serialize(rawTransactionSerializer);
 
     let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
       (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
+      transaction,
       {
         enableWaitForTransaction: true,
       }
@@ -67,6 +69,7 @@ export async function transferTokens(
     return txn.txHash;
   } catch (error: any) {
     console.log("error", error);
+    console.log("error", error.response);
     throw new Error(`Token transfer failed: ${error.message}`);
   }
 }
