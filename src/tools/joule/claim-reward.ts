@@ -18,7 +18,7 @@ export async function claimReward(
       mint ===
       "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::stapt_token::StakedApt";
 
-    let transaction = await agent.supra.createRawTxObject(
+    let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
@@ -39,12 +39,9 @@ export async function claimReward(
       ]
     );
 
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
-
     let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
       (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
+      transaction,
       {
         enableWaitForTransaction: true,
       }

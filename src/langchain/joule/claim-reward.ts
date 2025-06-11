@@ -29,19 +29,10 @@ export class JouleClaimRewardTool extends Tool {
         parsedInput.rewardCoinType
       );
 
-      const tokenDetails = await this.agent.getTokenDetails(
-        parsedInput.rewardCoinType
-      );
-
       return JSON.stringify({
         status: "success",
         claimRewardsTransactionHash,
-        reward: {
-          coinType: parsedInput.rewardCoinType,
-          name: tokenDetails.name,
-          type: parsedInput.rewardName,
-          decimals: tokenDetails.decimals,
-        },
+        reward: parsedInput.rewardCoinType,
       });
     } catch (error: any) {
       return JSON.stringify({

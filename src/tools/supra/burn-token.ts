@@ -14,7 +14,7 @@ export async function burnToken(
   mint: string
 ): Promise<string> {
   try {
-    let transaction = await agent.supra.createRawTxObject(
+    let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
@@ -26,12 +26,9 @@ export async function burnToken(
       [BCS.bcsSerializeStr(mint), BCS.bcsSerializeUint64(amount)]
     );
 
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
-
     let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
       (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
+      transaction,
       {
         enableWaitForTransaction: true,
       }

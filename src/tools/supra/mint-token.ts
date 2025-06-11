@@ -15,7 +15,7 @@ export async function mintToken(
   amount: number
 ): Promise<string> {
   try {
-    let transaction = await agent.supra.createRawTxObject(
+    let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
@@ -25,30 +25,27 @@ export async function mintToken(
       "mint_to_address",
       [],
       [
-        BCS.bcsSerializeStr(to.toString()),
+        to.toUint8Array(),
         BCS.bcsSerializeStr(mint),
         BCS.bcsSerializeUint64(amount),
       ]
     );
 
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
-
     let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
       (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
+      transaction,
       {
         enableWaitForTransaction: true,
       }
     );
 
     if (!txn.result) {
-      console.error(txn, "Token burn failed");
-      throw new Error("Token burn failed");
+      console.error(txn, "Token mint failed");
+      throw new Error("Token mint failed");
     }
 
     return txn.txHash;
   } catch (error: any) {
-    throw new Error(`Token burn failed: ${error.message}`);
+    throw new Error(`Token mint failed: ${error.message}`);
   }
 }

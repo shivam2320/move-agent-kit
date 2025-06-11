@@ -25,13 +25,8 @@ export class JouleRepayTokenTool extends Tool {
     try {
       const parsedInput = parseJson(input);
 
-      const mintDetail = await this.agent.getTokenDetails(parsedInput.mint);
-
       const repayTokenTransactionHash = await this.agent.repayToken(
-        convertAmountFromHumanReadableToOnChain(
-          parsedInput.amount,
-          mintDetail.decimals || 8
-        ),
+        convertAmountFromHumanReadableToOnChain(parsedInput.amount, 8),
         parsedInput.mint,
         parsedInput.positionId,
         parsedInput.fungibleAssetAddress
@@ -40,10 +35,6 @@ export class JouleRepayTokenTool extends Tool {
       return JSON.stringify({
         status: "success",
         repayTokenTransactionHash,
-        token: {
-          name: mintDetail.name,
-          decimals: mintDetail.decimals,
-        },
       });
     } catch (error: any) {
       return JSON.stringify({

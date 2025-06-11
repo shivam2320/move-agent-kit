@@ -46,8 +46,8 @@ minMintY: number, eg 1 or 0.01 (optional)`;
         mintY = tokenY.tokenAddress;
       }
 
-      const mintXDetail = await this.agent.getTokenDetails(mintX);
-      const mintYDetail = await this.agent.getTokenDetails(mintY);
+      const mintXDecimals = await this.agent.getTokenDecimals(mintX);
+      const mintYDecimals = await this.agent.getTokenDecimals(mintY);
 
       const removeLiquidityTransactionHash = await this.agent.removeLiquidity(
         parseFungibleAssetAddressToWrappedAssetAddress(mintX),
@@ -55,11 +55,11 @@ minMintY: number, eg 1 or 0.01 (optional)`;
         convertAmountFromHumanReadableToOnChain(parsedInput.lpAmount, 6),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.minMintX || 0,
-          mintXDetail.decimals
+          mintXDecimals
         ),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.minMintY || 0,
-          mintYDetail.decimals
+          mintYDecimals
         )
       );
 
@@ -68,12 +68,12 @@ minMintY: number, eg 1 or 0.01 (optional)`;
         removeLiquidityTransactionHash,
         token: [
           {
-            mintX: mintXDetail.name,
-            decimals: mintXDetail.decimals,
+            mintX: mintX,
+            decimals: mintXDecimals,
           },
           {
-            mintY: mintYDetail.name,
-            decimals: mintYDetail.decimals,
+            mintY: mintY,
+            decimals: mintYDecimals,
           },
         ],
       });

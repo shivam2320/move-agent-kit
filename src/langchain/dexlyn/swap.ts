@@ -2,7 +2,6 @@ import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
-import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
 
 export class DexlynSwapTool extends Tool {
   name = "Dexlyn_swap";
@@ -45,20 +44,19 @@ minCoinOut: number, eg 1 or 0.01 (optional)`;
         mintY = tokenY.tokenAddress;
       }
 
-      const mintXDetail = await this.agent.getTokenDetails(mintX);
-
-      const mintYDetail = await this.agent.getTokenDetails(mintY);
+      const mintXDecimals = await this.agent.getTokenDecimals(mintX);
+      const mintYDecimals = await this.agent.getTokenDecimals(mintY);
 
       const swapTransactionHash = await this.agent.swap(
         mintX,
         mintY,
         convertAmountFromHumanReadableToOnChain(
           parsedInput.swapAmount,
-          mintXDetail.decimals
+          mintXDecimals
         ),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.minCoinOut,
-          mintXDetail.decimals
+          mintXDecimals
         ) || 0
       );
 
@@ -67,12 +65,12 @@ minCoinOut: number, eg 1 or 0.01 (optional)`;
         swapTransactionHash,
         token: [
           {
-            mintX: mintXDetail.name,
-            decimals: mintXDetail.decimals,
+            mintX: mintX,
+            decimals: mintXDecimals,
           },
           {
-            mintY: mintYDetail.name,
-            decimals: mintYDetail.decimals,
+            mintY: mintY,
+            decimals: mintYDecimals,
           },
         ],
       });

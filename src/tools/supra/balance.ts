@@ -50,7 +50,6 @@ export async function getBalance(
 
     return convertedBalance;
   } catch (error: any) {
-    console.log("balance", error);
     throw new Error(`Token balance failed: ${error.message}`);
   }
 }

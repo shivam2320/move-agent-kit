@@ -18,23 +18,14 @@ export class SupraBurnTokenTool extends Tool {
     try {
       const parsedInput = parseJson(input);
 
-      const mintDetail = await this.agent.getTokenDetails(parsedInput.mint);
-
       const burnTransactionHash = await this.agent.burnToken(
-        convertAmountFromHumanReadableToOnChain(
-          parsedInput.amount,
-          mintDetail.decimals || 8
-        ),
+        convertAmountFromHumanReadableToOnChain(parsedInput.amount, 8),
         parsedInput.mint
       );
 
       return JSON.stringify({
         status: "success",
         burnTransactionHash,
-        token: {
-          name: mintDetail.name,
-          decimals: mintDetail.decimals,
-        },
       });
     } catch (error: any) {
       return JSON.stringify({

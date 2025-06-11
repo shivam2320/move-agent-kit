@@ -3,6 +3,7 @@ import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
 import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
+import { getTokenDecimals } from "../../tools/supra/get-token-decimals";
 
 export class DexlynAddLiquidityTool extends Tool {
   name = "Dexlyn_add_liquidity";
@@ -48,19 +49,19 @@ export class DexlynAddLiquidityTool extends Tool {
       const wrappedMintY =
         parseFungibleAssetAddressToWrappedAssetAddress(mintY);
 
-      const mintXDetail = await this.agent.getTokenDetails(wrappedMintX);
-      const mintYDetail = await this.agent.getTokenDetails(wrappedMintY);
+      const mintXDecimals = await getTokenDecimals(this.agent, wrappedMintX);
+      const mintYDecimals = await getTokenDecimals(this.agent, wrappedMintY);
 
       const swapTransactionHash = await this.agent.addLiquidity(
         wrappedMintX,
         wrappedMintY,
         convertAmountFromHumanReadableToOnChain(
           parsedInput.mintXAmount,
-          mintXDetail.decimals
+          mintXDecimals
         ),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.mintYAmount,
-          mintYDetail.decimals
+          mintYDecimals
         )
       );
 
@@ -69,12 +70,12 @@ export class DexlynAddLiquidityTool extends Tool {
         swapTransactionHash,
         token: [
           {
-            mintX: mintXDetail.name,
-            decimals: mintXDetail.decimals,
+            mintX: wrappedMintX,
+            decimals: mintXDecimals,
           },
           {
-            mintY: mintYDetail.name,
-            decimals: mintYDetail.decimals,
+            mintY: wrappedMintY,
+            decimals: mintYDecimals,
           },
         ],
       });

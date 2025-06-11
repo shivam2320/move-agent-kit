@@ -18,7 +18,7 @@ export async function swap(
   minCoinOut = 0
 ): Promise<string> {
   try {
-    let transaction = await agent.supra.createRawTxObject(
+    let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
@@ -27,19 +27,18 @@ export async function swap(
       "router",
       "swap_exact_coin_for_coin",
       [
-        mintX as unknown as TxnBuilderTypes.TypeTag,
-        mintY as unknown as TxnBuilderTypes.TypeTag,
-        "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8::curves::Uncorrelated" as unknown as TxnBuilderTypes.TypeTag,
+        new TxnBuilderTypes.TypeTagParser(mintX).parseTypeTag(),
+        new TxnBuilderTypes.TypeTagParser(mintY).parseTypeTag(),
+        new TxnBuilderTypes.TypeTagParser(
+          "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8::curves::Uncorrelated"
+        ).parseTypeTag(),
       ],
       [BCS.bcsSerializeUint64(swapAmount), BCS.bcsSerializeUint64(minCoinOut)]
     );
 
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
-
     let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
       (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
+      transaction,
       {
         enableWaitForTransaction: true,
       }

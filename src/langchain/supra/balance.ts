@@ -24,14 +24,11 @@ export class SupraBalanceTool extends Tool {
       const mint = parsedInput.mint || undefined;
       const balance = await this.agent.getBalance(mint);
 
-      console.log("bal", balance);
-
       return JSON.stringify({
         status: "success",
         balance,
       });
     } catch (error: any) {
-      console.log("error", error);
       return JSON.stringify({
         status: "error",
         message: error.message,

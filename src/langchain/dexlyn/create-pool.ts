@@ -39,9 +39,8 @@ export class DexlynCreatePoolTool extends Tool {
         mintY = tokenY.tokenAddress;
       }
 
-      const mintXDetail = await this.agent.getTokenDetails(mintX);
-
-      const mintYDetail = await this.agent.getTokenDetails(mintY);
+      const mintXDecimals = await this.agent.getTokenDecimals(mintX);
+      const mintYDecimals = await this.agent.getTokenDecimals(mintY);
 
       const createPoolTransactionHash = await this.agent.createPool(
         parseFungibleAssetAddressToWrappedAssetAddress(mintX),
@@ -53,12 +52,12 @@ export class DexlynCreatePoolTool extends Tool {
         createPoolTransactionHash,
         token: [
           {
-            mintX: mintXDetail.name,
-            decimals: mintXDetail.decimals,
+            mintX: mintX,
+            decimals: mintXDecimals,
           },
           {
-            mintY: mintYDetail.name,
-            decimals: mintYDetail.decimals,
+            mintY: mintY,
+            decimals: mintYDecimals,
           },
         ],
       });

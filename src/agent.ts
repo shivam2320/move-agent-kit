@@ -17,6 +17,7 @@ import {
   transferNFT,
   transferTokens,
   withdrawToken,
+  getTokenDecimals,
 } from "./tools";
 import { createImage } from "./tools/openai";
 import {
@@ -201,5 +202,9 @@ export class AgentRuntime {
 
   claimReward(rewardCoinType: string) {
     return claimReward(this, rewardCoinType);
+  }
+
+  getTokenDecimals(mint: string) {
+    return getTokenDecimals(this, mint);
   }
 }

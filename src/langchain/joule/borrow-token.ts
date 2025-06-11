@@ -24,16 +24,10 @@ export class JouleBorrowTokenTool extends Tool {
     try {
       const parsedInput = parseJson(input);
 
-      const mintDetail = await this.agent.getTokenDetails(parsedInput.mint);
-
-      const fungibleAsset =
-        mintDetail.faAddress.toLowerCase() === parsedInput.mint.toLowerCase();
+      const fungibleAsset = parsedInput.mint.toLowerCase();
 
       const borrowTokenTransactionHash = await this.agent.borrowToken(
-        convertAmountFromHumanReadableToOnChain(
-          parsedInput.amount,
-          mintDetail.decimals || 8
-        ),
+        convertAmountFromHumanReadableToOnChain(parsedInput.amount, 8),
         parsedInput.mint,
         parsedInput.positionId,
         fungibleAsset
@@ -42,10 +36,6 @@ export class JouleBorrowTokenTool extends Tool {
       return JSON.stringify({
         status: "success",
         borrowTokenTransactionHash,
-        token: {
-          name: mintDetail.name || "SUPRA",
-          decimals: mintDetail.decimals || 8,
-        },
       });
     } catch (error: any) {
       return JSON.stringify({

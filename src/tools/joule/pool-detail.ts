@@ -12,27 +12,10 @@ export async function getPoolDetail(
   mint: string
 ): Promise<any> {
   try {
-    let transaction = await agent.supra.createRawTxObject(
-      agent.account.getAddress(),
-      (
-        await agent.supra.getAccountInfo(agent.account.getAddress())
-      ).sequence_number,
-      "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8",
-      "pool",
-      "get_pool_detail",
-      [mint as unknown as TxnBuilderTypes.TypeTag],
+    let txn = await agent.supra.invokeViewMethod(
+      "0x0dc694898dff98a1b0447e0992d0413e123ea80da1021d464a4fbaf0265870d8::pool::get_pool_detail",
+      [mint],
       []
-    );
-
-    let rawTransactionSerializer = new BCS.Serializer();
-    transaction.serialize(rawTransactionSerializer);
-
-    let txn = await agent.supra.sendTxUsingSerializedRawTransaction(
-      (agent.account as any).account,
-      rawTransactionSerializer.getBytes(),
-      {
-        enableWaitForTransaction: true,
-      }
     );
 
     if (!txn.result) {

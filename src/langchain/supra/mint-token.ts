@@ -21,8 +21,6 @@ if the recipient wants to receive the token and not send to anybody else, keep t
     try {
       const parsedInput = parseJson(input);
 
-      const mintDetail = await this.agent.getTokenDetails(parsedInput.mint);
-
       const recipient = this.agent.account.getAddress();
       const mintTokenTransactionHash = await this.agent.mintToken(
         recipient,
@@ -33,10 +31,6 @@ if the recipient wants to receive the token and not send to anybody else, keep t
       return JSON.stringify({
         status: "success",
         mintTokenTransactionHash,
-        token: {
-          name: mintDetail.name || "SUPRA",
-          decimals: 8,
-        },
       });
     } catch (error: any) {
       return JSON.stringify({
