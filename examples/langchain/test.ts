@@ -41,7 +41,7 @@ const promptOptions = [
 ];
 
 export const main = async () => {
-  const supra = new SupraClient("https://rpc-mainnet.supra.com/", 6);
+  const supra = new SupraClient("https://rpc-mainnet.supra.com/", 8);
 
   // Validate and get private key from environment
   const privateKeyStr = process.env.SUPRA_PRIVATE_KEY;

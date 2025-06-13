@@ -10,7 +10,7 @@ export const llm = new ChatAnthropic({
 });
 
 export const setupAgentKit = async () => {
-  const supra = new SupraClient("https://rpc-mainnet.supra.com/", 6);
+  const supra = new SupraClient("https://rpc-mainnet.supra.com/", 8);
 
   const privateKeyStr = process.env.SUPRA_PRIVATE_KEY;
   if (!privateKeyStr) {

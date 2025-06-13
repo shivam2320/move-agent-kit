@@ -81,7 +81,7 @@ const convertLangChainMessageToVercelMessage = (message: BaseMessage) => {
 
 export async function POST(request: Request) {
   try {
-    const supra = new SupraClient("https://rpc-mainnet.supra.com/", 6);
+    const supra = new SupraClient("https://rpc-mainnet.supra.com/", 8);
 
     // Validate and get private key from environment
     const privateKeyStr = process.env.SUPRA_PRIVATE_KEY;

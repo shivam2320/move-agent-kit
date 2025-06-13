@@ -52,7 +52,7 @@ minMintY: number, eg 1 or 0.01 (optional)`;
       const removeLiquidityTransactionHash = await this.agent.removeLiquidity(
         parseFungibleAssetAddressToWrappedAssetAddress(mintX),
         parseFungibleAssetAddressToWrappedAssetAddress(mintY),
-        convertAmountFromHumanReadableToOnChain(parsedInput.lpAmount, 6),
+        convertAmountFromHumanReadableToOnChain(parsedInput.lpAmount, 8),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.minMintX || 0,
           mintXDecimals

@@ -7,7 +7,7 @@ import { BaseSigner } from "./base-signer";
 
 export class LocalSigner extends BaseSigner {
   constructor(account: SupraAccount) {
-    const supra = new SupraClient("https://rpc-mainnet.supra.com/", 6);
+    const supra = new SupraClient("https://rpc-mainnet.supra.com/", 8);
     super(account, supra);
   }
 
