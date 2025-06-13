@@ -1,7 +1,7 @@
-import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
+import { convertAmountFromHumanReadableToOnChain } from "../../utils/amount-conversion";
 
 export class DexlynSwapTool extends Tool {
   name = "Dexlyn_swap";

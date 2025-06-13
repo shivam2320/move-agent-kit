@@ -1,4 +1,3 @@
-import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 
 /**

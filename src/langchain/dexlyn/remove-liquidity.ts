@@ -1,8 +1,8 @@
-import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
 import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
+import { convertAmountFromHumanReadableToOnChain } from "../../utils/amount-conversion";
 
 export class DexlynRemoveLiquidityTool extends Tool {
   name = "Dexlyn_remove_liquidity";

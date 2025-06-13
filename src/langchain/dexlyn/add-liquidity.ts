@@ -1,9 +1,8 @@
-import { convertAmountFromHumanReadableToOnChain } from "@aptos-labs/ts-sdk";
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
 import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
-import { getTokenDecimals } from "../../tools/supra/get-token-decimals";
+import { convertAmountFromHumanReadableToOnChain } from "../../utils/amount-conversion";
 
 export class DexlynAddLiquidityTool extends Tool {
   name = "Dexlyn_add_liquidity";
@@ -49,8 +48,8 @@ export class DexlynAddLiquidityTool extends Tool {
       const wrappedMintY =
         parseFungibleAssetAddressToWrappedAssetAddress(mintY);
 
-      const mintXDecimals = await getTokenDecimals(this.agent, wrappedMintX);
-      const mintYDecimals = await getTokenDecimals(this.agent, wrappedMintY);
+      const mintXDecimals = await this.agent.getTokenDecimals(wrappedMintX);
+      const mintYDecimals = await this.agent.getTokenDecimals(wrappedMintY);
 
       const swapTransactionHash = await this.agent.addLiquidity(
         wrappedMintX,

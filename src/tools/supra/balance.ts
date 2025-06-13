@@ -1,4 +1,3 @@
-import { convertAmountFromOnChainToHumanReadable } from "@aptos-labs/ts-sdk";
 import type { AgentRuntime } from "../../agent";
 
 /**
@@ -43,10 +42,7 @@ export async function getBalance(
       agent.account.getAddress()
     );
 
-    const convertedBalance = convertAmountFromOnChainToHumanReadable(
-      Number(balance),
-      8
-    );
+    const convertedBalance = Number(balance) / 10 ** 8;
 
     return convertedBalance;
   } catch (error: any) {
