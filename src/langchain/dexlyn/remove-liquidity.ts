@@ -1,7 +1,6 @@
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
-import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
 import { convertAmountFromHumanReadableToOnChain } from "../../utils/amount-conversion";
 
 export class DexlynRemoveLiquidityTool extends Tool {
@@ -50,8 +49,8 @@ minMintY: number, eg 1 or 0.01 (optional)`;
       const mintYDecimals = await this.agent.getTokenDecimals(mintY);
 
       const removeLiquidityTransactionHash = await this.agent.removeLiquidity(
-        parseFungibleAssetAddressToWrappedAssetAddress(mintX),
-        parseFungibleAssetAddressToWrappedAssetAddress(mintY),
+        mintX,
+        mintY,
         convertAmountFromHumanReadableToOnChain(parsedInput.lpAmount, 8),
         convertAmountFromHumanReadableToOnChain(
           parsedInput.minMintX || 0,

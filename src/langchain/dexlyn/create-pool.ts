@@ -1,7 +1,6 @@
 import { Tool } from "langchain/tools";
 import { type AgentRuntime, parseJson } from "../..";
 import { getTokenByTokenName } from "../../utils/get-pool-address-by-token-name";
-import { parseFungibleAssetAddressToWrappedAssetAddress } from "../../utils/parse-fungible-asset-to-wrapped-asset";
 
 export class DexlynCreatePoolTool extends Tool {
   name = "Dexlyn_create_pool";
@@ -43,8 +42,8 @@ export class DexlynCreatePoolTool extends Tool {
       const mintYDecimals = await this.agent.getTokenDecimals(mintY);
 
       const createPoolTransactionHash = await this.agent.createPool(
-        parseFungibleAssetAddressToWrappedAssetAddress(mintX),
-        parseFungibleAssetAddressToWrappedAssetAddress(mintY)
+        mintX,
+        mintY
       );
 
       return JSON.stringify({
