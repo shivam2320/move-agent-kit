@@ -1,6 +1,5 @@
 import { BCS, HexString, TxnBuilderTypes } from "supra-l1-sdk-core";
 import type { AgentRuntime } from "../../agent";
-import { TypeTag } from "@aptos-labs/ts-sdk";
 
 /**
  * Transfer APT, tokens or fungible asset to a recipient
@@ -24,6 +23,11 @@ export async function transferTokens(
 ): Promise<string> {
   try {
     const isCoin = mint.split("::").length === 3;
+
+    console.log(isCoin, "isCoin");
+    console.log(mint, "mint");
+    console.log(to, "to");
+    console.log(amount, "amount");
 
     let transaction = await agent.supra.createSerializedRawTxObject(
       agent.account.getAddress(),

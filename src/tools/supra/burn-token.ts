@@ -19,7 +19,7 @@ export async function burnToken(
       (
         await agent.supra.getAccountInfo(agent.account.getAddress())
       ).sequence_number,
-      "0x67c8564aee3799e9ac669553fdef3a3828d4626f24786b6a5642152fa09469dd",
+      "0x75626d347f31385bd3005372686d2875ff3e5a5ffd2b8cc06eb3f25c3abf2e57",
       "launchpad",
       "burn_fa",
       [],

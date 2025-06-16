@@ -42,6 +42,8 @@ export async function getBalance(
       agent.account.getAddress()
     );
 
+    console.log(balance, "balance");
+
     const convertedBalance = Number(balance) / 10 ** 8;
 
     return convertedBalance;
