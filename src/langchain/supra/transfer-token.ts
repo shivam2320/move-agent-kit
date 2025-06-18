@@ -4,19 +4,29 @@ import { convertAmountFromHumanReadableToOnChain } from "../../utils/amount-conv
 
 export class SupraTransferTokenTool extends Tool {
   name = "supra_transfer_token";
-  description = `this tool can be used to transfer SUPRA, any token or fungible asset to a recipient
+  description = `This tool transfers SUPRA tokens, other tokens, or fungible assets on the Supra blockchain.
 
-  if you want to transfer SUPRA, mint will be "0x1::supra_coin::SupraCoin"
-  if you want to transfer token other than SUPRA, you need to provide the mint of that specific token
-  if you want to transfer fungible asset, add fungible asset address as mint
+Transfer Types:
+- SUPRA: Use mint "0x1::supra_coin::SupraCoin"
+- Other tokens: Provide the specific token's mint address
+- Fungible assets: Provide the fungible asset address as mint
 
-  keep to blank if user themselves wants to receive the token and not send to anybody else
+Inputs (JSON string):
+{
+  "to": string (optional) - Recipient address or receiver address. If omitted or left blank, transfers to the caller's own address (self-transfer)
+    Example: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa"
+    
+  "amount": number (required) - Amount to transfer
+    Examples: 1, 0.01, 100.5
+    
+  "mint": string (required) - Token/asset identifier
+    Examples:
+    - SUPRA: "0x1::supra_coin::SupraCoin"
+    - Other token: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT"
+    - Fungible asset: "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa"
+}
 
-  Inputs ( input is a JSON string ):
-  to: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (optional)
-  amount: number, eg 1 or 0.01 (required)
-  mint: string, eg "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT" 
-  or "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa" (required)`;
+Note: When "to" is not provided, the transfer will be made to your own address (useful for moving assets between your own accounts).`;
 
   constructor(private agent: AgentRuntime) {
     super();

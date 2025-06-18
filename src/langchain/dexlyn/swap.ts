@@ -11,7 +11,7 @@ want to swap SUPRA and one of the token, mint is 0x1::supra_coin::SupraCoin
 one of the token is USDT, use 0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT
 
 if user added mintX or mintY as asset name, and you don't have the address of the asset, use these token names:
-usdt,zusdt,zusdc,apt,sthapt,mod,thl,wusdc,zweth,wweth,cake,stapt,abtc,stone,truapt,sbtc
+['dexUSDC', 'supra']
 or whatever name the user has provided, you can use the token name to get the address of the token 
 
 cant swap any fungible tokens. only coin standard swap allowed. if user trying to swap fungible token, ask it to swap via some other tool.

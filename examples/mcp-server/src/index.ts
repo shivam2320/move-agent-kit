@@ -37,7 +37,7 @@ export async function main() {
     new DynamicStructuredTool({
       name: "get_balance",
       description:
-        "Get the balance of a token if no token is provided, it will return the balance of the APT. Divide the balance by 10^8 to get the human readable balance.",
+        "Get the balance of a token if no token is provided, it will return the balance of the SUPRA. Divide the balance by 10^8 to get the human readable balance.",
       schema: z.object({
         mint: z.string().optional(),
       }),

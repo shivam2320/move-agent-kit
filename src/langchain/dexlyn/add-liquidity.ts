@@ -11,7 +11,7 @@ export class DexlynAddLiquidityTool extends Tool {
     if you want to add SUPRA and one of the token, mint will be "0x1::supra_coin::SupraCoin"
 
 	if user added mintX or mintY as asset name, and you don't have the address of the asset, you can use the following token names:
-	['usdt', 'zusdt', 'zusdc', 'apt', 'sthapt', 'mod', 'thl', 'wusdc' , 'zweth', 'wweth', 'cake', 'stapt', 'abtc', 'stone' , 'truapt', 'sbtc']
+	['dexUSDC', 'supra']
 	or whatever name the user has provided, you can use the token name to get the address of the token 
 
 
